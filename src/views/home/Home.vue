@@ -28,6 +28,7 @@ import GoodsList from "components/content/goods/GoodsList";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 
+
 export default {
   name: "Home",
   components: {
