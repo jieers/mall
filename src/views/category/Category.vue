@@ -107,7 +107,7 @@
 
 <script>
 // import BScroll from "@better-scroll/core";
-import BetterScroll from "@better-scroll/core";
+import BetterScroll from 'better-scroll'
 import Pullup from "@better-scroll/pull-up";
 
 BetterScroll.use(Pullup);
@@ -128,7 +128,7 @@ export default {
     bs.on("pullingUp", () => {
       console.log("上啦加载更多");
       // await fetchData()
-      // bs.finishPullUp()
+      bs.finishPullUp()
     });
   },
 };
