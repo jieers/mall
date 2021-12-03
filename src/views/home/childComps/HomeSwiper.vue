@@ -2,7 +2,8 @@
       <swiper>
       <swiper-item v-for="item in banners" :key="item.id">
         <a :href="item.link">
-          <img :src="item.image" alt="">
+          <!-- @load监听图片有没有加载完 -->
+          <img :src="item.image" alt="" @load="imgLoad">
         </a>
       </swiper-item>
     </swiper>
@@ -21,11 +22,23 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      isLoad: false
+    }
+  },
   components: {
     Swiper,
     SwiperItem
+  },
+  methods: {
+    imgLoad() {
+      if(!this.isLoad) {
+      this.$emit('loadImg')
+      this.isLoad = true
+      }
+    }
   }
-
 }
 </script>
 
