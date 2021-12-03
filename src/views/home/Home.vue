@@ -1,7 +1,7 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-    <scroll class="a">
+    <scroll class="a" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-up-load="true" @pullingUp="loadMore">
       <home-swiper :banners="banners"></home-swiper>
       <recommend :recommends="recommends"></recommend>
       <feature></feature>
@@ -12,7 +12,8 @@
       ></tab-control>
       <goods-list :goods="goods[currentType].list"></goods-list>
     </scroll>
-    <back-top></back-top>
+    <!-- 组件不能直接监听点击，.native可以用来监听原生组件点击事件 -->
+    <back-top @click.native="backClick" v-show="isBackTop"></back-top>
   </div>
 </template>
 
@@ -52,6 +53,7 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: "pop",
+      isBackTop: false
     };
   },
   //组件创建完后立即发送网络请求
@@ -74,6 +76,8 @@ export default {
       getHomeGoods(type, page).then((res) => {
         this.goods[type].list = [...this.goods[type].list, ...res.data.list];
         this.goods[type].page += 1;
+
+        this.$refs.scroll.scroll.finishPullUp()
       });
     },
     //事件监听相关方法
@@ -90,25 +94,36 @@ export default {
           break;
       }
     },
+    backClick() {
+      this.$refs.scroll.scrollTo(0,0)
+    },
+    contentScroll(position) {
+      // console.log(position);
+      this.isBackTop = (-position.y) > 1000
+    },
+    loadMore() {
+      this.getHomeGoods(this.currentType);
+      this.$refs.scroll.scroll.refresh()
+    }
   },
 };
 </script>
 
 <style scoped>
 #home {
-  padding-top: 44px;
-    /* height: 100vh;
-    position: relative; */
+  /* padding-top: 44px; */
+    height: 100vh;
+    position: relative;
 }
 .home-nav {
   background-color: var(--color-tint);
   color: #fff;
 
-  position: fixed;
+  /* position: fixed;
   right: 0;
   left: 0;
   top: 0;
-  z-index: 11;
+  z-index: 11; */
 }
 
 .tab-control {
@@ -118,14 +133,14 @@ export default {
 }
 
 .a {
-    /* overflow: hidden;
+    overflow: hidden;
 
     position: absolute;
     top: 44px;
     bottom: 49px;
     left: 0;
-    right: 0; */
+    right: 0;
 
-
+/* height: 500px; */
 }
 </style>
