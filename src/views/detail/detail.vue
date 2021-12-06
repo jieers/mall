@@ -11,9 +11,9 @@
       <goods-list :goods="recommends" ref="recommend"></goods-list>
     </scroll>
     <detail-bottom-bar @addToCart="addToCart"></detail-bottom-bar>
-    <back-top @backTop="backTop" class="back-top" v-show="showBackTop">
+    <!-- <back-top @backTop="backTop" class="back-top" v-show="showBackTop">
       <img src="~assets/img/common/top.png" alt="">
-    </back-top>
+    </back-top> -->
   </div>
 </template>
 
@@ -28,8 +28,9 @@ import DetailCommentInfo from "@/views/detail/childComps/DetailCommentInfo";
 import DetailBottomBar from "@/views/detail/childComps/DetailBottomBar";
 
 import GoodsList from "@/components/content/goods/GoodsList";
-
 import Scroll from "components/common/scroll/Scroll";
+// import BackTop from "components/content/backTop/BackTop";
+
 
 
 import {getDetail, getRecommend, Goods, Shop, GoodsParam} from "network/detail"
@@ -47,6 +48,7 @@ export default {
       commentInfo: {},
       recommends: [],
       themeTopYs: [],
+      isShowBackTop: false,
     }
   },
   components: {
@@ -60,10 +62,21 @@ export default {
     DetailCommentInfo,
     GoodsList,
     DetailBottomBar,
+
   },
   methods: {
     titleClick(index) {
       this.$refs.scroll.scrollTo(0, -this.themeTopYs[index],200)
+    },
+    addToCart() {
+      const product = {};
+      product.image = this.topImages[0];
+      product.title = this.detailInfo.title;
+      product.desc = this.detailInfo.desc;
+      product.price = this.detailInfo.realPrice;
+      product.iid = this.iid;
+
+      this.$store.commit('addCart', product)
     }
   },
   created() {
