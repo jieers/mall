@@ -10,7 +10,7 @@
       <detail-comment-info :comment-info="commentInfo" ref="comment"></detail-comment-info>
       <goods-list :goods="recommends" ref="recommend"></goods-list>
     </scroll>
-    <detail-bottom-bar @addToCart="addToCart"></detail-bottom-bar>
+    <detail-bottom-bar @addCart="addToCart"></detail-bottom-bar>
     <!-- <back-top @backTop="backTop" class="back-top" v-show="showBackTop">
       <img src="~assets/img/common/top.png" alt="">
     </back-top> -->
@@ -31,7 +31,7 @@ import GoodsList from "@/components/content/goods/GoodsList";
 import Scroll from "components/common/scroll/Scroll";
 // import BackTop from "components/content/backTop/BackTop";
 
-
+import { mapActions} from 'vuex'
 
 import {getDetail, getRecommend, Goods, Shop, GoodsParam} from "network/detail"
 
@@ -39,7 +39,7 @@ export default {
   name: "detail",
   data() {
     return {
-      iid: null,
+      iid: '',
       topImages: [],
       goods: {},
       shop: {},
@@ -65,18 +65,28 @@ export default {
 
   },
   methods: {
+    // ...mapActions(['addCart2']),//这里映射addCart2，然后下面就可以不用dispatch
     titleClick(index) {
       this.$refs.scroll.scrollTo(0, -this.themeTopYs[index],200)
     },
     addToCart() {
       const product = {};
       product.image = this.topImages[0];
-      product.title = this.detailInfo.title;
-      product.desc = this.detailInfo.desc;
-      product.price = this.detailInfo.realPrice;
+      product.title = this.goods.title;
+      product.desc = this.goods.desc;
+      product.price = this.goods.realPrice;
       product.iid = this.iid;
+      // console.log(product)
+      console.log(this.iid)
+      // this.$store.commit('addCart2', product)
 
-      this.$store.commit('addCart', product)
+      // this.addCart2(product).then(res => { //可以通过action映射，然后就可以像在这个组件调用一样调用这个方法
+      //   console.log(res)
+      // })
+      //.then是返回action里返回的promise
+      this.$store.dispatch('addCart2', product).then(res => {
+        console.log(res)
+      })
     }
   },
   created() {
